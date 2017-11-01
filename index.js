@@ -1,4 +1,4 @@
-import HtmlTemp from "./HtmlTemp";
+import HtmlTemp from "./src/HtmlTemp";
 
 export default function(temp,data,dom,filter){
   if(typeof temp==="object"){
