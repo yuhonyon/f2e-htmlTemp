@@ -1,0 +1,22 @@
+{
+  "name": "@fastweb/wechat-share",
+  "version": "1.0.5",
+  "description": "HTML模板引擎",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "travis-publish": "node node_modules/travis-release/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.91jkys.com:f2e/htmlTemp.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "yufangyang",
+  "license": "ISC",
+  "devDependencies": {
+    "travis-release": "^1.0.0"
+  }
+}

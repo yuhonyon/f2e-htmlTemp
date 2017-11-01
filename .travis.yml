@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "7"
+install:
+  - npm install
+script:
+  - npm run travis-publish
+deploy:
+   provider: npm
+   email: "975057282@qq.com"
+   api_key: "${TOKEN}"
+   allow_failure: true
+   skip_cleanup: true
+   on:
+      tags: true
+      branch: master
+      condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+"

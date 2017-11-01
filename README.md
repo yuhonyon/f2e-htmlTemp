@@ -1,0 +1,1 @@
+# 微信分享 [![Build Status](https://travis-ci.org/yuhonyon/f2e-htmlTemp.svg?branch=master)](https://travis-ci.org/yuhonyon/f2e-htmlTemp) [![npm](https://img.shields.io/npm/v/@fastweb/html-temp.svg)](https://www.npmjs.com/package/@fastweb/html-temp)
