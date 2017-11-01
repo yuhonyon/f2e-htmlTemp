@@ -6,6 +6,7 @@ install:
 test:
   - npm run test
 script:
+  - npm run test
   - npm run travis-publish
 deploy:
    provider: npm

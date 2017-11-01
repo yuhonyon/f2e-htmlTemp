@@ -1,5 +1,5 @@
 {
-  "name": "@fastweb/wechat-share",
+  "name": "@fastweb/html-temp",
   "version": "1.0.5",
   "description": "HTML模板引擎",
   "main": "index.js",
