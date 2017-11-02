@@ -1,4 +1,4 @@
-let HtmlTemp = {
+let htmlTemp = {
     templateSettings: {
       evaluate: /\<\%([\s\S]+?(\}?)+)\%\>/g,
       interpolate: /\<\%=([\s\S]+?)\%\>/g,
@@ -15,13 +15,16 @@ let HtmlTemp = {
       selfcontained: false,
       doNotSkipEncoded: false
     },
+    filters: {},
     template: undefined,
     compile: undefined,
-    log: true
+    render: undefined,
+    log: true,
+    cache: {}
   },
   _globals;
 
-HtmlTemp.encodeHTMLSource = function(doNotSkipEncoded) {
+htmlTemp.encodeHTMLSource = function(doNotSkipEncoded) {
   let encodeHTMLRules = {
       "&": "&#38;",
       "<": "&#60;",
@@ -105,8 +108,27 @@ function unescape(code) {
   return code.replace(/\\('|\\)/g, "$1").replace(/[\r\t\n]/g, " ");
 }
 
-HtmlTemp.template = function(tmpl, c, def) {
-  c = c || HtmlTemp.templateSettings;
+function filter(codes){
+  let code=codes[0];
+  for(let i =1; i<codes.length; i++){
+    if(/\(/.test(codes[i])){
+      let _code=codes[i].split("(");
+      if(!htmlTemp.filters[_code[0]]){
+        throw new Error("过滤器"+_code[0]+"不存在");
+      }
+      code="filters['"+_code[0]+"']("+code+","+_code[1];
+    }else{
+      if(!htmlTemp.filters[codes[i]]){
+        throw new Error("过滤器"+codes[i]+"不存在");
+      }
+      code="filters['"+codes[i]+"']("+code+")";
+    }
+  }
+  return code;
+}
+
+htmlTemp.template = function(tmpl, c, def) {
+  c = c || htmlTemp.templateSettings;
   let cse = c.append
       ? startend.append
       : startend.split,
@@ -120,6 +142,10 @@ HtmlTemp.template = function(tmpl, c, def) {
   str = ("var out='" + (c.strip
     ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g, " ").replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g, "")
     : str).replace(/'|\\/g, "\\$&").replace(c.interpolate || skip, function(m, code) {
+    if(/\|/.test(code)){
+      let codeArr=code.split('|');
+      code =filter(codeArr);
+    }
     return cse.start + unescape(code) + cse.end;
   }).replace(c.encode || skip, function(m, code) {
     needhtmlencode = true;
@@ -143,19 +169,52 @@ HtmlTemp.template = function(tmpl, c, def) {
   }) + "';return out;").replace(/\n/g, "\\n").replace(/\t/g, '\\t').replace(/\r/g, "\\r").replace(/(\s|;|\}|^|\{)out\+='';/g, '$1').replace(/\+''/g, "");
 
   if (needhtmlencode) {
-    if (!c.selfcontained && _globals && !_globals._encodeHTML) { _globals._encodeHTML = HtmlTemp.encodeHTMLSource(c.doNotSkipEncoded); }
-    str = "var encodeHTML = typeof _encodeHTML !== 'undefined' ? _encodeHTML : (" + HtmlTemp.encodeHTMLSource.toString() + "(" + (c.doNotSkipEncoded || '') + "));" + str;
+    if (!c.selfcontained && _globals && !_globals._encodeHTML) { _globals._encodeHTML = htmlTemp.encodeHTMLSource(c.doNotSkipEncoded); }
+    str = "var encodeHTML = typeof _encodeHTML !== 'undefined' ? _encodeHTML : (" + htmlTemp.encodeHTMLSource.toString() + "(" + (c.doNotSkipEncoded || '') + "));" + str;
   }
   try {
-    return new Function(c.varname, str);
+    return new Function(c.varname,"filters", str);
   } catch (e) {
-    if (typeof console !== "undefined") { console.log("Could not create a template function: " + str); }
+    if (typeof console !== "undefined") { console.log("无法创建这个模板函数: " + str); }
     throw e;
   }
 };
 
-HtmlTemp.compile = function(tmpl, def) {
-  return HtmlTemp.template(tmpl, null, def);
+htmlTemp.render=function(tmpl,data,def,id){
+  if(typeof def!=='object'){
+    def=null;
+    id=def;
+  }
+  return htmlTemp.compile(tmpl,def,id)(data,htmlTemp.filters);
+};
+htmlTemp.renderDom=function(dom,tmpl,data,def,id){
+  if(typeof dom!=='object'||!dom.tagName){
+    dom=document.getElementById(dom.replace(/^#/, ""));
+  }
+  dom.innerHTML=htmlTemp.render(tmpl,data,def,id);
 };
 
-export default HtmlTemp;
+htmlTemp.compile = function(tmpl,def,id) {
+  if(typeof def!=='object'){
+    def=null;
+    id=def;
+  }
+  let template;
+  if(htmlTemp.cache[id]){
+    template=htmlTemp.cache[id];
+  }else{
+    if(typeof tmpl==="object"&&tmpl.tagName){
+      tmpl=tmpl.innerHTML;
+    }else if(typeof tmpl==="string"&&!/</.test(tmpl)){
+      tmpl=document.getElementById(tmpl.replace(/^#/, ""));
+      tmpl=tmpl?tmpl.innerHTML:"";
+    }
+    template=htmlTemp.template(tmpl, null,def);
+    if(id){
+      htmlTemp.cache[id]=template;
+    }
+  }
+  return template;
+};
+
+export default htmlTemp;

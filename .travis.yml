@@ -3,8 +3,6 @@ node_js:
   - "7"
 install:
   - npm install
-test:
-  - npm run test
 script:
   - npm run test
   - npm run travis-publish
