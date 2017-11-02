@@ -1,3 +1,3 @@
-import htmlTemp from "./src/htmlTemp";
+import htmlTemp from "./src/htmlTemp.js";
 
 export default htmlTemp;
