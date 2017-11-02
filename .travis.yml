@@ -4,8 +4,8 @@ node_js:
 install:
   - npm install
 script:
-  - npm run test
   - npm run travis-publish
+  - npm run test  
 deploy:
    provider: npm
    email: "975057282@qq.com"
