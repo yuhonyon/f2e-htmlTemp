@@ -11,7 +11,7 @@ deploy:
    email: "975057282@qq.com"
    api_key: "${TOKEN}"
    allow_failure: true
-   skip_cleanup: true
+   skip_cleanup: false
    on:
       tags: true
       branch: master
