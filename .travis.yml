@@ -5,13 +5,12 @@ install:
   - npm install
 script:
   - npm run travis-publish
-  - npm run test
 deploy:
    provider: npm
    email: "975057282@qq.com"
    api_key: "${TOKEN}"
    allow_failure: true
-   skip_cleanup: false
+   skip_cleanup: true
    on:
       tags: true
       branch: master
