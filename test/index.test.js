@@ -1,4 +1,4 @@
-import htmlTemp from './../index.js';
+import htmlTemp from './../src/htmlTemp.js';
 const expect = require('chai').expect;
 
 let temp="<div><%=data.id%></div>";
