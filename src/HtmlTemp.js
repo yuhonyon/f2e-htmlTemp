@@ -143,7 +143,15 @@ htmlTemp.template = function(tmpl, c, def) {
     ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g, " ").replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g, "")
     : str).replace(/'|\\/g, "\\$&").replace(c.interpolate || skip, function(m, code) {
     if(/\|/.test(code)){
-      let codeArr=code.split('|');
+      let codeArr;
+      if(/\|\|/.test(code)){
+        code=code.replace(/\|\|/g,'@#$*');
+        code=code.replace(/\|/g,'*$#@');
+        code=code.replace(/@#\$\*/g,'||');
+        codeArr=code.split('*$#@');
+      }else{
+        codeArr=code.split('|');
+      }
       code =filter(codeArr);
     }
     return cse.start + unescape(code) + cse.end;
