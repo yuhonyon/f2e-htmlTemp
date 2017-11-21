@@ -1,5 +1,6 @@
 # 模板引擎 [![Build Status](https://travis-ci.org/yuhonyon/f2e-htmlTemp.svg?branch=master)](https://travis-ci.org/yuhonyon/f2e-htmlTemp) [![npm](https://img.shields.io/npm/v/@fastweb/html-temp.svg)](https://www.npmjs.com/package/@fastweb/html-temp)
-
+------
+>htmlTemp.js特点是快，小，无依赖其他插件。支持过滤器
 
 ## 安装
 ```bash

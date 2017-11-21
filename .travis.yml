@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - "8"
+  - "7"
 install:
   - npm install
+  - npm install npm-cli-login -g
 script:
   - npm run travis-publish
 deploy:
@@ -15,3 +16,6 @@ deploy:
       tags: true
       branch: master
       condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+"
+after_deploy:
+  - npm-cli-login -u yuhonyon -p ${PASS} -e 975057282@qq.com
+  - npm run travis-publish
